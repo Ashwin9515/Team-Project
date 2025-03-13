@@ -19,7 +19,7 @@ function ChatInterface() {
       setResult(''); // Clear previous result
  
       try {
-        const response = await fetch(`https://didactic-pancake-x5w6v46xxjwgfxg6-5000.app.github.dev/api/chat`, {
+        const response = await fetch(`https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

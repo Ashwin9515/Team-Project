@@ -19,7 +19,7 @@ const TaskList = () => {
  
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("https://cuddly-adventure-g4xwpjpw4v7r25vv-5000.app.github.dev/api/tasks");
+      const response = await axios.get("https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -33,7 +33,7 @@ const TaskList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://cuddly-adventure-g4xwpjpw4v7r25vv-5000.app.github.dev/api/tasks", newTask);
+      await axios.post("https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks", newTask);
       fetchTasks();
       setNewTask({
         task: "",
@@ -56,7 +56,7 @@ const TaskList = () => {
       try {
         // Only send the field that needs to be updated (desc)
         await axios.put(
-          `https://cuddly-adventure-g4xwpjpw4v7r25vv-5000.app.github.dev/api/tasks/${id}`,
+          `https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks/${id}`,
           {
             desc: newDesc, // Only send the field you're updating
           }
@@ -71,7 +71,7 @@ const TaskList = () => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       console.log("Deleting task with ID:", id); // Add more logging to verify
       try {
-        const response = await axios.delete(`https://cuddly-adventure-g4xwpjpw4v7r25vv-5000.app.github.dev/api/tasks/${id}`);
+        const response = await axios.delete(`https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks/${id}`);
         console.log("Deleted task response:", response.data); // Log response to check if deletion was successful
         fetchTasks();
       } catch (error) {
