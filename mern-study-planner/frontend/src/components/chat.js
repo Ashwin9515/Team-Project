@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
- 
+
 function ChatInterface() {
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
- 
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
- 
+
   // Handle text input change
   const handleTextChange = (e) => {
     setInputText(e.target.value);
   };
- 
+
   // Handle chat submission and stream the response
   const handleSubmit = async () => {
     if (inputText.trim()) {
       setIsLoading(true);
       setResult(''); // Clear previous result
- 
+
       try {
         const response = await fetch(`https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/chat`, {
           method: 'POST',
@@ -26,54 +24,54 @@ function ChatInterface() {
           },
           body: JSON.stringify({ content: inputText }),
         });
- 
+
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
- 
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let done = false;
-        let accumulatedResult = '';
-        console.log(response)
+        let accumulatedResult = ''; // This needs to be handled carefully
+
         while (!done) {
           const { value, done: readerDone } = await reader.read();
           done = readerDone;
-          console.log(done)
-          console.log(value)
+
           if (value) {
             const chunk = decoder.decode(value, { stream: true });
             const lines = chunk.split('\n');
-            console.log(lines.length)
-            console.log(lines)
+            
+            // Accumulate the result without defining a function inside the loop
+            let newResult = accumulatedResult;
             lines.forEach((line) => {
               if (line.startsWith('data:')) {
-                console.log("1")
                 const data = line.replace('data: ', '').trim();
- 
+
                 // Check for the end of the stream
                 if (data === '[DONE]') {
-                  console.log("2")
                   setIsLoading(false);
                   return;
                 }
- 
+
                 try {
-                  console.log("3")
                   // Parse JSON if it's not "[DONE]"
                   const parsedData = JSON.parse(data);
                   if (parsedData.response) {
-                    accumulatedResult += parsedData.response;
-                    setResult(accumulatedResult);
+                    newResult += parsedData.response;
                   }
                 } catch (err) {
                   console.error('Error parsing JSON chunk:', err);
                 }
               }
             });
+
+            // Update the result once after processing all lines in the chunk
+            setResult(newResult);
+            accumulatedResult = newResult;  // Update the accumulated result
           }
         }
- 
+
         // Finalize loading state once done
         setIsLoading(false);
       } catch (error) {
@@ -83,11 +81,11 @@ function ChatInterface() {
       }
     }
   };
- 
+
   return (
     <div>
       <h1>Chat with Gemma 2:2b</h1>
- 
+
       <div>
         <textarea
           value={inputText}
@@ -98,11 +96,11 @@ function ChatInterface() {
           disabled={isLoading}
         />
       </div>
- 
+
       <button onClick={handleSubmit} disabled={isLoading}>
         {isLoading ? 'Waiting for response...' : 'Send'}
       </button>
- 
+
       <div>
         <h2>Response:</h2>
         <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{result}</pre>
@@ -110,5 +108,5 @@ function ChatInterface() {
     </div>
   );
 }
- 
+
 export default ChatInterface;

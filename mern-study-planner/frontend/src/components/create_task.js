@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
- 
+
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({
@@ -12,28 +12,28 @@ const TaskList = () => {
     completed: false,
     percentComp: 0,
   });
- 
+
   useEffect(() => {
     fetchTasks();
   }, []);
- 
+
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks");
+      const response = await axios.get("https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks"); // Updated API URL
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
- 
+
   const handleChange = (e) => {
     setNewTask({ ...newTask, [e.target.name]: e.target.value });
   };
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks", newTask);
+      await axios.post("https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks", newTask); // Updated API URL
       fetchTasks();
       setNewTask({
         task: "",
@@ -48,7 +48,7 @@ const TaskList = () => {
       console.error("Error adding task:", error);
     }
   };
- 
+
   const handleEdit = async (id) => {
     const updatedTask = tasks.find((task) => task._id === id);
     const newDesc = prompt("Edit description:", updatedTask.desc);
@@ -67,31 +67,62 @@ const TaskList = () => {
       }
     }
   };
+
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
-      console.log("Deleting task with ID:", id); // Add more logging to verify
+      console.log("Deleting task with ID:", id); // Log the task being deleted
       try {
-        const response = await axios.delete(`https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks/${id}`);
-        console.log("Deleted task response:", response.data); // Log response to check if deletion was successful
+        await axios.delete(`https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks/${id}`);
+        console.log("Task deleted successfully"); // Confirm deletion
         fetchTasks();
       } catch (error) {
         console.error("Error deleting task:", error);
       }
     }
   };
- 
+
   return (
     <div>
       <h2>Task List</h2>
       <form onSubmit={handleSubmit}>
-        <input name="task" value={newTask.task} onChange={handleChange} placeholder="Task" required />
-        <input name="subject" value={newTask.subject} onChange={handleChange} placeholder="Subject" required />
-        <input name="desc" value={newTask.desc} onChange={handleChange} placeholder="Description" required />
-        <input type="date" name="startdate" value={newTask.startdate} onChange={handleChange} required />
-        <input type="date" name="deadline" value={newTask.deadline} onChange={handleChange} required />
+        <input
+          name="task"
+          value={newTask.task}
+          onChange={handleChange}
+          placeholder="Task"
+          required
+        />
+        <input
+          name="subject"
+          value={newTask.subject}
+          onChange={handleChange}
+          placeholder="Subject"
+          required
+        />
+        <input
+          name="desc"
+          value={newTask.desc}
+          onChange={handleChange}
+          placeholder="Description"
+          required
+        />
+        <input
+          type="date"
+          name="startdate"
+          value={newTask.startdate}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="date"
+          name="deadline"
+          value={newTask.deadline}
+          onChange={handleChange}
+          required
+        />
         <button type="submit">Add Task</button>
       </form>
- 
+
       <table>
         <thead>
           <tr>
@@ -126,5 +157,5 @@ const TaskList = () => {
     </div>
   );
 };
- 
+
 export default TaskList;

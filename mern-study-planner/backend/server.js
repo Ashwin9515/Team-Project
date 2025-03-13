@@ -87,13 +87,50 @@ app.delete("/api/tasks/:id", async (req, res) => {
   }
 });
 
-// Get profile
-app.get("/api/profile", async (req, res) => {
+// Get all profiles
+app.get("/api/profiles", async (req, res) => {
   try {
-    const profile = await Profile.findOne(); // Assuming a single profile
-    res.json(profile);
+    const profiles = await Profile.find();
+    res.json(profiles);
   } catch (error) {
-    console.error("Error fetching profile:", error);
+    console.error("Error fetching profiles:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Create a new profile
+app.post("/api/profiles", async (req, res) => {
+  try {
+    const newProfile = new Profile(req.body);
+    await newProfile.save();
+    res.json({ message: "Profile added successfully", profile: newProfile });
+  } catch (error) {
+    console.error("Error adding profile:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Edit a profile
+app.put("/api/profiles/:id", async (req, res) => {
+  try {
+    const updatedProfile = await Profile.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(updatedProfile);
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Delete a profile
+app.delete("/api/profiles/:id", async (req, res) => {
+  try {
+    const deletedProfile = await Profile.findByIdAndDelete(req.params.id);
+    if (!deletedProfile) {
+      return res.status(404).json({ error: "Profile not found" });
+    }
+    res.json({ message: "Profile deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting profile:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
