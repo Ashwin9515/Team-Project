@@ -3,26 +3,23 @@ import { TextField, Button, Typography, Paper, Grid } from '@mui/material';
 import axios from 'axios';
 
 const Profile = () => {
-  const [profile, setProfile] = useState({
-    name: '',
-    email: '',
-    role: ''
-  });
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
 
-  // Fetch profile based on email
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const email = 'johndoe@example.com'; // Replace with dynamic email from auth context
-        const response = await axios.get(
-          'https://cuddly-adventure-g4xwpjpw4v7r25vv-5000.app.github.dev/api/profile',
-          { params: { email } }
-        );
+        const response = await axios.get('/api/profile', { params: { email } });
         setProfile(response.data);
       } catch (error) {
         console.error("Error fetching profile:", error);
+        setProfile({
+          name: 'New User',
+          email: 'johndoe@example.com',
+          role: 'Student'
+        });
       } finally {
         setLoading(false);
       }
@@ -39,10 +36,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        'https://cuddly-adventure-g4xwpjpw4v7r25vv-5000.app.github.dev/api/profile',
-        profile
-      );
+      const response = await axios.post('/api/profile', profile);
       setProfile(response.data.profile);
       setEditMode(false);
     } catch (error) {
@@ -82,7 +76,7 @@ const Profile = () => {
                 value={profile.email}
                 onChange={handleInputChange}
                 required
-                disabled // Email is used as identifier, shouldn't be changed
+                disabled
               />
             </Grid>
             <Grid item xs={12}>
