@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const Profile = () => {
-  const [profiles, setProfiles] = useState([]); // Store array of profiles
+  const [profiles, setProfiles] = useState([]);
 
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
         const response = await axios.get("https://expert-yodel-qrpx5wx46q4cx745-5000.app.github.dev/api/profiles");
-        setProfiles(response.data); // Store the array of profiles
+        setProfiles(response.data);
       } catch (error) {
         console.error("Error fetching profiles:", error);
       }
@@ -18,7 +18,7 @@ const Profile = () => {
   }, []);
 
   if (profiles.length === 0) {
-    return <div>Loading...</div>; // Display loading while fetching
+    return <div>Loading...</div>;
   }
 
   return (

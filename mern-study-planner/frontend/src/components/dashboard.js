@@ -1,6 +1,6 @@
-import { Grid } from "@mui/material"; // Update to use `Grid` instead of `Grid2`
+import { Grid } from "@mui/material";
 import { useState, useEffect } from "react";
-import axios from "axios"; // Import axios to make API calls
+import axios from "axios";
 import PieChart from "./PieChart";
 import CalenderView from "./CalenderView";
 import Cards from "./DashboardCard";
@@ -12,28 +12,26 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        // Fetch tasks from the backend
-        const response = await axios.get("https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks"); // Use your backend URL here
+        const response = await axios.get("https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/tasks");
         const tasks = response.data;
 
         let comp = 0, due = 0, notSt = 0, inProg = 0;
         let calData = [];
 
-        tasks.forEach((element) => {
+        tasks.forEach((task) => {
           calData.push({
-            id: element._id,
-            title: element.task,
-            start_date: element.startdate,
-            end_date: element.deadline,
-            percent_complete: element.percentComp,
+            id: task._id,
+            title: task.task,
+            start_date: task.startdate,
+            end_date: task.deadline,
+            percent_complete: task.percentComp,
           });
-          if (element.completed) comp++;
-          else if (Date.parse(element.deadline) < Date.now()) due++;
-          else if (element.percentComp === 0) notSt++;
+          if (task.completed) comp++;
+          else if (Date.parse(task.deadline) < Date.now()) due++;
+          else if (task.percentComp === 0) notSt++;
           else inProg++;
         });
 
-        // Update the state with the calculated data
         setPieData([comp, inProg, due, notSt]);
         setCalenderData(calData);
       } catch (error) {
@@ -41,7 +39,7 @@ const Dashboard = () => {
       }
     };
 
-    fetchTasks(); // Call the function to fetch tasks on component mount
+    fetchTasks();
   }, []);
 
   return (
