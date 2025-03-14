@@ -1,32 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Profile = () => {
-  const [profile, setProfile] = useState(null); // State to store profile data
+  const [profiles, setProfiles] = useState([]); // Store array of profiles
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfiles = async () => {
       try {
-        const response = await axios.get("https://fuzzy-fiesta-4jjprrwwwxqq25g76-5000.app.github.dev/api/profiles"); // Backend API to fetch profile
-        setProfile(response.data); // Update state with fetched profile data
+        const response = await axios.get("https://expert-yodel-qrpx5wx46q4cx745-5000.app.github.dev/api/profiles");
+        setProfiles(response.data); // Store the array of profiles
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error("Error fetching profiles:", error);
       }
     };
 
-    fetchProfile(); // Fetch profile data on component mount
+    fetchProfiles();
   }, []);
 
-  if (!profile) {
-    return <div>Loading...</div>; // Display loading message while data is being fetched
+  if (profiles.length === 0) {
+    return <div>Loading...</div>; // Display loading while fetching
   }
 
   return (
     <div className="profile-container">
       <h2>Student Details</h2>
-      <p><strong>Name:</strong> {profile.name}</p>
-      <p><strong>Email:</strong> {profile.email}</p>
-      <p><strong>Role:</strong> {profile.role}</p>
+      {profiles.map((profile) => (
+        <div key={profile._id}>
+          <p><strong>Name:</strong> {profile.name}</p>
+          <p><strong>Email:</strong> {profile.email}</p>
+          <p><strong>Role:</strong> {profile.role}</p>
+          <hr />
+        </div>
+      ))}
     </div>
   );
 };
